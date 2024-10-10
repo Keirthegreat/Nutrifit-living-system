@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nutri Fit - Login & Sign Up</title>
+
+  <!-- External Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #b2f7b1 0%, #c1f2d5 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      height: 80vh;
+      display: flex;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      border-radius: 15px;
+      border: 2px solid #74ebd5;
+      overflow: hidden;
+    }
+
+    .left, .right {
+      flex: 1;
+      padding: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .left {
+      background: #f7f7f7;
+      animation: slideInLeft 1s ease;
+    }
+
+    .left h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #444;
+    }
+
+    .left p {
+      font-size: 1.1rem;
+      color: #666;
+      line-height: 1.6;
+    }
+
+    .right {
+      background: #fff;
+      animation: fadeInRight 1s ease;
+    }
+
+    .form-box {
+      max-width: 350px;
+      margin: 0 auto;
+    }
+
+    .form-box h2 {
+      font-size: 1.8rem;
+      margin-bottom: 30px;
+      color: #333;
+      text-align: center;
+    }
+
+    .input-box {
+      position: relative;
+      margin-bottom: 25px;
+    }
+
+    .input-box input {
+      width: 100%;
+      padding: 10px 0;
+      font-size: 1rem;
+      border: none;
+      border-bottom: 2px solid #aaa;
+      background: none;
+      outline: none;
+      transition: 0.4s;
+    }
+
+    .input-box label {
+      position: absolute;
+      top: 0;
+      left: 0;
+      color: #aaa;
+      font-size: 1rem;
+      pointer-events: none;
+      transition: 0.4s;
+    }
+
+    .input-box input:focus ~ label,
+    .input-box input:valid ~ label {
+      top: -20px;
+      color: #74ebd5;
+      font-size: 0.9rem;
+    }
+
+    .input-box .underline {
+      position: absolute;
+      width: 0%;
+      height: 2px;
+      bottom: 0;
+      left: 0;
+      background: #74ebd5;
+      transition: 0.4s;
+    }
+
+    .input-box input:focus ~ .underline {
+      width: 100%;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px 0;
+      background: #74ebd5;
+      color: white;
+      font-size: 1rem;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: 0.4s;
+    }
+
+    .btn:hover {
+      background: #ACB6E5;
+    }
+
+    .toggle-link {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .toggle-link a {
+      color: #74ebd5;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .toggle-link a:hover {
+      text-decoration: underline;
+    }
+
+    /* Animations */
+    @keyframes slideInLeft {
+      from {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Toggle Form */
+    #signupForm {
+      display: none;
+    }
+
+    .error {
+      color: red;
+      font-size: 0.9rem;
+      margin-top: 5px;
+    }
+
+    .show-password-container {
+      margin-bottom: 20px;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    .show-password-container label {
+      cursor: pointer;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Left Side (Welcome Message) -->
+    <div class="left">
+      <h1>Welcome to Nutri Fit!</h1>
+      <p>Your personalized fitness journey starts here. Sign up or log in to access your tailored fitness plans, track your progress, and stay fit!</p>
+    </div>
+
+    <!-- Right Side (Login & Sign Up Form) -->
+    <div class="right">
+      <div class="form-box" id="loginForm">
+        <h2>Login</h2>
+        <form id="loginFormElement" action="main.html.html">
+          <div class="input-box">
+            <input type="text" id="loginUsername" required>
+            <label>Username</label>
+            <div class="underline"></div>
+            <div class="error" id="loginUsernameError"></div>
+          </div>
+          <div class="input-box">
+            <input type="password" id="loginPassword" required>
+            <label>Password</label>
+            <div class="underline"></div>
+            <div class="error" id="loginPasswordError"></div>
+          </div>
+          <!-- Show Password Checkbox -->
+          <div class="show-password-container">
+            <input type="checkbox" id="showLoginPassword" onclick="togglePasswordVisibility('loginPassword')">
+            <label for="showLoginPassword">Show Password</label>
+          </div>
+          <button type="submit" class="btn">Log In</button>
+        </form>
+        <p class="toggle-link">Don’t have an account? <a href="#" onclick="toggleForm('signup')">Sign up here</a></p>
+      </div>
+
+      <div class="form-box" id="signupForm">
+        <h2>Sign Up</h2>
+        <form id="signupFormElement">
+          <div class="input-box">
+            <input type="text" id="signupFullName" required>
+            <label>Full Name</label>
+            <div class="underline"></div>
+            <div class="error" id="signupFullNameError"></div>
+          </div>
+          <div class="input-box">
+            <input type="email" id="signupEmail" required>
+            <label>Email</label>
+            <div class="underline"></div>
+            <div class="error" id="signupEmailError"></div>
+          </div>
+          <div class="input-box">
+            <input type="password" id="signupPassword" required>
+            <label>Password</label>
+            <div class="underline"></div>
+            <div class="error" id="signupPasswordError"></div>
+          </div>
+          <div class="show-password-container">
+            <input type="checkbox" id="showSignupPassword" onclick="togglePasswordVisibility('signupPassword')">
+            <label for="showSignupPassword">Show Password</label>
+          </div>
+          <div class="input-box">
+            <input type="text" id="signupUsername" required>
+            <label>Username</label>
+            <div class="underline"></div>
+            <div class="error" id="signupUsernameError"></div>
+          </div>
+          <button type="submit" class="btn">Sign Up</button>
+        </form>
+        <p class="toggle-link">Already have an account? <a href="#" onclick="toggleForm('login')">Log in here</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript for Toggling Forms & Validation -->
+  <script>
+    function toggleForm(formType) {
+      const loginForm = document.getElementById("loginForm");
+      const signupForm = document.getElementById("signupForm");
+      if (formType === 'signup') {
+        loginForm.style.display = 'none';
+        signupForm.style.display = 'block';
+      } else {
+        loginForm.style.display = 'block';
+        signupForm.style.display = 'none';
+      }
+    }
+
+    function togglePasswordVisibility(passwordFieldId) {
+      const passwordField = document.getElementById(passwordFieldId);
+      if (passwordField.type === "password") {
+        passwordField.type = "text";
+      } else {
+        passwordField.type = "password";
+      }
+    }
+
+    // Prevent form submission and redirect to main.html
+    document.getElementById('loginFormElement').addEventListener('submit', function(event) {
+      event.preventDefault();  // Prevent form submission
+      redirectToMain();  // Redirect to main.html
+    });
+
+    document.getElementById('signupFormElement').addEventListener('submit', function(event) {
+      event.preventDefault();  // Prevent form submission
+      redirectToMain();  // Redirect to main.html
+    });
+
+    function redirectToMain() {
+      // Redirect to the main.html page
+      window.location.href = 'main.html.html';
+    }
+  </script>
+</body>
+</html>
