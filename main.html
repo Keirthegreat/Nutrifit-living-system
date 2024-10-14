@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriFit Living</title>
+    <!-- Include Font Awesome and Google Fonts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" defer></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700|Montserrat:400,600&display=swap" rel="stylesheet">
+    <style>
+        /* General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f4f4f9;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header and Navigation */
+        header {
+            background-color: #4CAF50;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .menu-toggle {
+            display: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 1rem;
+            position: relative;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease, transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        nav ul li a:hover {
+            color: #f9f9f9;
+            transform: scale(1.1);
+        }
+
+        nav ul li a::after {
+            content: '';
+            display: block;
+            height: 2px;
+            background: #f4f4f9;
+            width: 0;
+            transition: width 0.4s ease;
+            position: absolute;
+            left: 0;
+            bottom: -5px;
+        }
+
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            background-color: #ffffff;
+            min-height: 100vh;
+            color: #000000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .hero h2 {
+            font-size: 64px;
+            font-weight: 700;
+            animation: pulse 4s infinite ease-in-out;
+            color: #4CAF50; /* Green color */
+        }
+
+        .hero p {
+            margin-top: 20px;
+            font-size: 24px;
+            color: #555;
+            opacity: 0;
+            animation: fadeInSlideUp 3s ease-in-out forwards;
+        }
+
+        /* Continuous animation for the hero title */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Fade-in animation for the paragraph */
+        @keyframes fadeInSlideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Key Features Section */
+        .key-features {
+            padding: 60px 10%;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        .key-features h3 {
+            font-size: 40px;
+            margin-bottom: 40px;
+            color: #333;
+            font-weight: 700;
+        }
+
+        .features-container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-box {
+            flex: 1;
+            min-width: 280px;
+            max-width: 300px;
+            margin: 10px;
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-box:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-box img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+        }
+
+        .feature-box h4 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #4CAF50;
+        }
+
+        .feature-box p {
+            font-size: 18px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* About Section */
+        .about-section {
+            padding: 80px 10%;
+            background-color: #fff;
+            text-align: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .about-section h3 {
+            font-size: 40px;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .about-section p {
+            font-size: 20px;
+            color: #666;
+            line-height: 1.8;
+            margin: 0 auto;
+            max-width: 800px;
+        }
+
+        /* Members Section */
+        .members {
+            padding: 80px 10%;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        .members h3 {
+            font-size: 40px;
+            margin-bottom: 40px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .leader-profile {
+            text-align: center;
+            margin-bottom: 50px;
+            transition: transform 0.3s ease;
+        }
+
+        .leader-profile img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .leader-profile h5 {
+            font-size: 24px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .leader-profile p {
+            font-size: 18px;
+            color: #666;
+        }
+
+        .member-grid {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .member {
+            text-align: center;
+            width: 250px;
+            margin-bottom: 40px;
+            transition: transform 0.3s ease;
+        }
+
+        .member:hover {
+            transform: translateY(-10px);
+        }
+
+        .member img {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .member h5 {
+            font-size: 22px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .member p {
+            font-size: 18px;
+            color: #666;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            background-color: #4CAF50;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        footer .social-links a {
+            color: #fff;
+            margin: 0 10px;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+
+        footer .social-links a:hover {
+            color: #f1f1f1;
+        }
+
+        /* Responsive Design Enhancements */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+                color: white;
+                cursor: pointer;
+            }
+
+            nav ul {
+                flex-direction: column;
+                background-color: #4CAF50;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease;
+            }
+
+            nav ul.active {
+                max-height: 600px;
+            }
+
+            nav ul li {
+                margin: 0;
+                width: 100%;
+                text-align: center;
+            }
+
+            nav ul li a {
+                padding: 1rem;
+                display: block;
+                width: 100%;
+                color: white;
+                border-bottom: 1px solid #f4f4f9;
+            }
+
+            .logo {
+                flex-grow: 1;
+                text-align: center;
+            }
+
+            .hero h2 {
+                font-size: 48px;
+            }
+
+            .hero p {
+                font-size: 20px;
+            }
+
+            .features-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .feature-box {
+                width: 100%;
+                max-width: 350px;
+                margin-bottom: 30px;
+            }
+
+            .member-grid {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h2 {
+                font-size: 36px;
+            }
+
+            .hero p {
+                font-size: 18px;
+            }
+
+            .key-features h3, .about-section h3, .members h3 {
+                font-size: 28px;
+            }
+
+            .about-section p, .members h5, .members p {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <header>
+        <nav>
+            <div class="logo">NutriFit Living</div>
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+            <ul>
+                <li><a href="main.html">Home</a></li>
+                <li><a href="bmi-calculator.html">BMI Calculator</a></li>
+                <li><a href="calorie-counter.html">Calorie Counter</a></li>
+                <li><a href="fit-program.html">Fit Program</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="community.html">Community</a></li>
+                <li><a href="profile.html">Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <h2>Welcome to NutriFit Living</h2>
+        <p>Personalized fitness and nutrition plans that fit your lifestyle</p>
+    </section>
+
+    <!-- Key Features Section -->
+    <section class="key-features">
+        <h3>Key Features of NutriFit Living</h3>
+        <div class="features-container">
+            <div class="feature-box">
+                <img src="nutrition-icon.svg" alt="Personalized Nutrition Plans">
+                <h4>Personalized Nutrition Plans</h4>
+                <p>Get a meal plan tailored to your health needs and goals.</p>
+            </div>
+            <div class="feature-box">
+                <img src="workout-icon.svg" alt="Custom Workout Plans">
+                <h4>Custom Workout Plans</h4>
+                <p>Exercise routines designed to fit your fitness level.</p>
+            </div>
+            <div class="feature-box">
+                <img src="community-icon.svg" alt="Community Support">
+                <h4>Community Support</h4>
+                <p>Join a community of fitness enthusiasts.</p>
+            </div>
+            <div class="feature-box">
+                <img src="tracking-icon.svg" alt="Progress Tracking">
+                <h4>Progress Tracking</h4>
+                <p>Track your BMI and monitor your progress.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- What is NutriFit Living All About Section -->
+    <section class="about-section">
+        <h3>What is NutriFit Living All About?</h3>
+        <p>NutriFit Living is your go-to platform for achieving your health and fitness goals through personalized meal plans, custom workout routines, and a supportive community. Our mission is to help you live a healthier, more balanced life by providing tools that are designed to fit your unique needs. Whether you're a beginner or an experienced athlete, NutriFit Living offers something for everyone. Track your progress, stay motivated, and connect with like-minded individuals on your journey to better health.</p>
+    </section>
+
+    <!-- Members Section -->
+    <section class="members" id="members">
+        <h3>Meet Our Developers</h3>
+
+        <!-- Leader in the Center -->
+        <div class="leader-profile">
+            <img src="leader.jpg" alt="Leader Picture">
+            <div class="profile-info">
+                <h5>Keir Stephan C. Tombocon</h5>
+                <p>Leader</p>
+            </div>
+        </div>
+
+        <div class="member-list">
+            <h4>Our Members</h4>
+            <div class="member-grid">
+                <div class="member">
+                    <img src="member1.jpg" alt="Member 1">
+                    <h5>John Rainer Sale</h5>
+                    <p>Back End Developer</p>
+                </div>
+                <div class="member">
+                    <img src="member2.jpg" alt="Member 2">
+                    <h5>Xianary Christia</h5>
+                    <p>Documentation</p>
+                </div>
+                <div class="member">
+                    <img src="member3.jpg" alt="Member 3">
+                    <h5>Omar S Conde Jr</h5>
+                    <p>Front End Developer</p>
+                </div>
+                <div class="member">
+                    <img src="member4.jpg" alt="Member 4">
+                    <h5>Christopher Ceasar Maano</h5>
+                    <p>Documentation</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; NutriFit Living. All rights reserved.</p>
+        <div class="social-links">
+            <a href="#">Facebook</a>
+            <a href="#">Instagram</a>
+            <a href="#">Twitter</a>
+        </div>
+    </footer>
+
+    <!-- JavaScript for the toggle menu -->
+    <script>
+        // Toggle Menu for Mobile
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navUl = document.querySelector('nav ul');
+
+        menuToggle.addEventListener('click', () => {
+            navUl.classList.toggle('active');
+        });
+
+        // Re-trigger animations when visiting the homepage
+        window.addEventListener("load", () => {
+            const heroSection = document.querySelector(".hero h2");
+            const heroParagraph = document.querySelector(".hero p");
+            heroSection.style.animation = "none";
+            heroParagraph.style.animation = "none";
+            setTimeout(() => {
+                heroSection.style.animation = "";
+                heroParagraph.style.animation = "";
+            }, 100);
+        });
+    </script>
+</body>
+</html>
+
