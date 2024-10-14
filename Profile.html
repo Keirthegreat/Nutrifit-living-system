@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Profile - NutriFit Living</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            font-family: 'Roboto', 'Montserrat', sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        /* Color scheme */
+        :root {
+            --primary-green: #4CAF50;
+            --secondary-green: #45a049;
+            --primary-blue: #2196F3;
+            --secondary-blue: #1e88e5;
+            --light-gray: #f4f4f4;
+            --dark-gray: #333;
+            --white: #fff;
+            --gradient-start: #b2f7b1;
+            --gradient-end: #c1f2d5;
+            --input-underline: #74ebd5;
+            --btn-hover: #ACB6E5;
+        }
+
+        /* Header and Navigation */
+        header {
+            background-color: var(--primary-green);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: slideDown 0.5s ease forwards;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+            animation-delay: 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .menu-toggle {
+            display: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 1rem;
+            position: relative;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease, transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        nav ul li a:hover {
+            color: var(--light-gray);
+            transform: scale(1.1);
+        }
+
+        /* Add a bottom border effect on hover */
+        nav ul li a::after {
+            content: '';
+            display: block;
+            height: 2px;
+            background: var(--light-gray);
+            width: 0;
+            transition: width 0.4s ease;
+            position: absolute;
+            left: 0;
+            bottom: -5px;
+        }
+
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+
+        /* Main Profile Section */
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            margin: 30px auto;
+        }
+
+        .container .title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #333;
+            text-align: center;
+        }
+
+        .content form .user-details {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .content form .input-box {
+            margin-bottom: 25px;
+            width: calc(50% - 15px);
+            position: relative;
+        }
+
+        .content form .input-box span.details {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .content form .input-box input {
+            height: 50px;
+            width: 100%;
+            padding: 0 15px;
+            font-size: 16px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            transition: border-color 0.3s ease;
+        }
+
+        .content form .input-box input:focus {
+            border-color: #44f56a;
+        }
+
+        .content form .input-box .icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        /* Gender selection */
+        .gender-details {
+            margin: 25px 0;
+        }
+
+        .gender-details .gender-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .category {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .category label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .category label input {
+            display: none;
+        }
+
+        .category label .dot {
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #d9d9d9;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid transparent;
+        }
+
+        .category label input:checked + .dot {
+            background: #44f56a;
+            border-color: #fff;
+        }
+
+        .category label input:checked + .dot::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: #fff;
+            font-size: 12px;
+        }
+
+        .button {
+            margin-top: 40px;
+            height: 55px;
+        }
+
+        .button input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #44f56a, #8afa74);
+        }
+
+        .button input:hover {
+            background: linear-gradient(135deg, #3ee158, #7efc65);
+        }
+
+        /* Responsive Design Enhancements */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+                color: white;
+                cursor: pointer;
+            }
+
+            nav ul {
+                flex-direction: column;
+                background-color: var(--primary-green);
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease;
+            }
+
+            nav ul.active {
+                max-height: 600px; /* Ensure all items are visible */
+            }
+
+            nav ul li {
+                margin: 0;
+                width: 100%;
+                text-align: center;
+            }
+
+            nav ul li a {
+                padding: 1rem;
+                display: block;
+                width: 100%;
+                color: white;
+                border-bottom: 1px solid var(--light-gray);
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <header>
+        <nav>
+            <div class="logo">NutriFit Living</div>
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+            <ul>
+                <li><a href="main.html">Home</a></li>
+                <li><a href="bmi-calculator.html">BMI Calculator</a></li>
+                <li><a href="calorie-counter.html">Calorie Counter</a></li>
+                <li><a href="fit-program.html">Fit Program</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="community.html">Community</a></li>
+                <li><a href="profile.html">Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Profile Form Content -->
+    <div class="container">
+        <div class="title">Profile</div>
+        <div class="content">
+            <form action="#">
+                <div class="user-details">
+                    <div class="input-box">
+                        <span class="details">Full Name</span>
+                        <input type="text" placeholder="Enter your name" required>
+                        <i class="icon fas fa-user"></i>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Username</span>
+                        <input type="text" placeholder="Enter your username" required>
+                        <i class="icon fas fa-at"></i>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Email</span>
+                        <input type="email" placeholder="Enter your email" required>
+                        <i class="icon fas fa-envelope"></i>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Phone Number</span>
+                        <input type="tel" placeholder="Enter your number" required>
+                        <i class="icon fas fa-phone"></i>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Location</span>
+                        <input type="text" placeholder="Enter your location" required>
+                        <i class="icon fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Date of Birth</span>
+                        <input type="date" required>
+                        <i class="icon fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Height (cm)</span>
+                        <input type="number" placeholder="Enter your height" required>
+                        <i class="icon fas fa-ruler-vertical"></i>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Weight (kg)</span>
+                        <input type="number" placeholder="Enter your weight" required>
+                        <i class="icon fas fa-weight"></i>
+                    </div>
+                </div>
+                <div class="gender-details">
+                    <span class="gender-title">Gender</span>
+                    <div class="category">
+                        <label>
+                            <input type="radio" name="gender" id="dot-1">
+                            <span class="dot"></span>
+                            <span class="gender">Male</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="gender" id="dot-2">
+                            <span class="dot"></span>
+                            <span class="gender">Female</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="gender" id="dot-3">
+                            <span class="dot"></span>
+                            <span class="gender">Prefer not to say</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="button">
+                    <input type="submit" value="Submit">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript for Mobile Menu Toggle -->
+    <script>
+        document.querySelector('.menu-toggle').addEventListener('click', function() {
+            document.querySelector('nav ul').classList.toggle('active');
+        });
+    </script>
+
+</body>
+</html>
