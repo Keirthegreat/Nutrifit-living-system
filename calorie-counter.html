@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calorie Counter | NutriFit Living</title>
+    <!-- Include Font Awesome for the toggle menu icon -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" defer></script>
+    <style>
+        /* General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header and Navigation */
+        header {
+            background-color: #4CAF50;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .menu-toggle {
+            display: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 1rem;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #f9f9f9;
+            transform: scale(1.1);
+        }
+
+        /* Mobile Responsiveness for the Navbar */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            nav ul {
+                flex-direction: column;
+                background-color: #4CAF50;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease;
+            }
+
+            nav ul.active {
+                max-height: 600px;
+            }
+
+            nav ul li {
+                margin: 0;
+                width: 100%;
+                text-align: center;
+            }
+
+            nav ul li a {
+                padding: 1rem;
+                display: block;
+                width: 100%;
+                color: white;
+                border-bottom: 1px solid #f4f4f9;
+            }
+
+            .logo {
+                flex-grow: 1;
+                text-align: center;
+            }
+        }
+
+        /* Calorie Counter Styles */
+        .container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .header .title {
+            display: block;
+            font-size: 14px;
+            text-transform: uppercase;
+            color: #16c639;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin: 0;
+            color: #333;
+        }
+
+        .section {
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin: 0;
+            color: #555;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background-color: #4f46e5;
+            width: 0%;
+            animation: progress-animation 1s ease-in-out forwards;
+        }
+
+        @keyframes progress-animation {
+            from {
+                width: 0%;
+            }
+            to {
+                width: var(--progress-width, 0%);
+            }
+        }
+
+        .meal-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .meal-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f0f0f0;
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+        }
+
+        .meal-list-item span {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .meal-list-item button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #ff4d4d;
+            font-size: 16px;
+        }
+
+        .add-meal-button {
+            background-color: #4f46e5;
+            color: white;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .add-meal-button:hover {
+            background-color: #3f3cc8;
+        }
+
+        /* Mobile Responsive Styling for Calorie Counter */
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+                margin: 1rem;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            h2 {
+                font-size: 16px;
+            }
+
+            .input-field {
+                padding: 0.4rem;
+            }
+
+            .meal-list-item span {
+                font-size: 14px;
+            }
+
+            .add-meal-button {
+                padding: 0.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <header>
+        <nav>
+            <div class="logo">NutriFit Living</div>
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+            <ul>
+                <li><a href="main.html">Home</a></li>
+                <li><a href="bmi-calculator.html">BMI Calculator</a></li>
+                <li><a href="calorie-counter.html">Calorie Counter</a></li>
+                <li><a href="fit-program.html">Fit Program</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="community.html">Community</a></li>
+                <li><a href="profile.html">Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Calorie Counter Content -->
+    <div class="container">
+        <div class="header">
+            <span class="title">NutriFit Living</span>
+            <h1>Calorie Counter</h1>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <h2>Daily Goal</h2>
+                <button id="toggleGoalEdit" class="icon-button">&#9660;</button>
+            </div>
+            <input type="number" id="dailyGoal" class="input-field" placeholder="Set your daily calorie goal" style="display: none;" />
+        </div>
+
+        <div class="section">
+            <h2>Progress</h2>
+            <div class="progress-bar">
+                <div id="progressFill" class="progress-bar-fill" style="--progress-width: 0%;"></div>
+            </div>
+            <div class="progress-info">
+                <span id="caloriesConsumed">0 cal</span> / <span id="calorieGoalDisplay">2000 cal</span>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Add Meal</h2>
+            <div class="add-meal-inputs">
+                <input type="text" id="mealName" class="input-field" placeholder="Meal name" />
+                <input type="number" id="mealCalories" class="input-field" placeholder="Calories" />
+                <button id="addMealButton" class="add-meal-button">Add</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Meals</h2>
+            <ul id="mealList" class="meal-list"></ul>
+        </div>
+    </div>
+
+    <!-- JavaScript for the toggle menu and calorie counter logic -->
+    <script>
+        // Toggle Menu for Mobile
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navUl = document.querySelector('nav ul');
+
+        menuToggle.addEventListener('click', () => {
+            navUl.classList.toggle('active');
+        });
+
+        // Calorie Counter Logic
+        let meals = [];
+        let dailyGoal = 2000;
+        let totalCalories = 0;
+
+        const mealList = document.getElementById('mealList');
+        const progressFill = document.getElementById('progressFill');
+        const caloriesConsumed = document.getElementById('caloriesConsumed');
+        const calorieGoalDisplay = document.getElementById('calorieGoalDisplay');
+        const dailyGoalInput = document.getElementById('dailyGoal');
+        const toggleGoalEditButton = document.getElementById('toggleGoalEdit');
+
+        document.getElementById('addMealButton').addEventListener('click', function () {
+            const mealName = document.getElementById('mealName').value;
+            const mealCalories = parseInt(document.getElementById('mealCalories').value);
+
+            if (mealName && mealCalories) {
+                meals.push({ name: mealName, calories: mealCalories });
+                totalCalories += mealCalories;
+                updateMeals();
+                updateProgress();
+                document.getElementById('mealName').value = '';
+                document.getElementById('mealCalories').value = '';
+            }
+        });
+
+        function updateMeals() {
+            mealList.innerHTML = '';
+            meals.forEach((meal, index) => {
+                const li = document.createElement('li');
+                li.className = 'meal-list-item';
+                li.innerHTML = `<span>${meal.name}</span><span>${meal.calories} cal</span><button onclick="removeMeal(${index})">X</button>`;
+                mealList.appendChild(li);
+            });
+        }
+
+        function updateProgress() {
+            const progressPercent = (totalCalories / dailyGoal) * 100;
+            progressFill.style.setProperty('--progress-width', progressPercent + '%');
+            caloriesConsumed.innerText = totalCalories + ' cal';
+        }
+
+        function removeMeal(index) {
+            totalCalories -= meals[index].calories;
+            meals.splice(index, 1);
+            updateMeals();
+            updateProgress();
+        }
+
+        toggleGoalEditButton.addEventListener('click', function () {
+            if (dailyGoalInput.style.display === 'none') {
+                dailyGoalInput.style.display = 'block';
+                toggleGoalEditButton.innerHTML = '&#9650;';
+            } else {
+                dailyGoal = parseInt(dailyGoalInput.value) || 2000;
+                calorieGoalDisplay.innerText = dailyGoal + ' cal';
+                dailyGoalInput.style.display = 'none';
+                toggleGoalEditButton.innerHTML = '&#9660;';
+                updateProgress();
+            }
+        });
+    </script>
+</body>
+</html>
