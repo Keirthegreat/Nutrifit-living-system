@@ -158,6 +158,46 @@
       text-decoration: underline;
     }
 
+    /* Password strength indicator */
+    .strength-meter-container {
+      margin-top: 15px;
+      text-align: center;
+    }
+
+    .strength-label {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 5px;
+    }
+
+    .strength-meter {
+      height: 8px;
+      width: 100%;
+      background-color: #ddd;
+      border-radius: 50px;
+      margin-top: 5px;
+      overflow: hidden;
+    }
+
+    .strength-meter div {
+      height: 100%;
+      width: 0;
+      transition: width 0.3s ease;
+      border-radius: 50px;
+    }
+
+    .weak {
+      background-color: #ff4b4b;
+    }
+
+    .medium {
+      background-color: #ffa500;
+    }
+
+    .strong {
+      background-color: #28a745;
+    }
+
     /* Animations */
     @keyframes slideInLeft {
       from {
@@ -251,7 +291,7 @@
     <div class="right">
       <div class="form-box" id="loginForm">
         <h2>Login</h2>
-        <form id="loginFormElement" action="main.html.html">
+        <form id="loginFormElement" action="main.html">
           <div class="input-box">
             <input type="text" id="loginUsername" required>
             <label>Username</label>
@@ -290,10 +330,17 @@
             <div class="error" id="signupEmailError"></div>
           </div>
           <div class="input-box">
-            <input type="password" id="signupPassword" required>
+            <input type="password" id="signupPassword" required oninput="checkPasswordStrength()">
             <label>Password</label>
             <div class="underline"></div>
             <div class="error" id="signupPasswordError"></div>
+          </div>
+          <!-- Password Strength Indicator (Progress Bar with Label) -->
+          <div class="strength-meter-container">
+            <div class="strength-label" id="strengthLabel">Password Strength</div>
+            <div class="strength-meter">
+              <div id="strengthBar"></div>
+            </div>
           </div>
           <div class="show-password-container">
             <input type="checkbox" id="showSignupPassword" onclick="togglePasswordVisibility('signupPassword')">
@@ -332,6 +379,42 @@
         passwordField.type = "text";
       } else {
         passwordField.type = "password";
+      }
+    }
+
+    // Function to check password strength and update progress bar
+    function checkPasswordStrength() {
+      const password = document.getElementById('signupPassword').value;
+      const strengthBar = document.getElementById('strengthBar');
+      const strengthLabel = document.getElementById('strengthLabel');
+      let strength = 0;
+
+      if (password.length >= 6) strength += 1;
+      if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength += 1;
+      if (password.match(/[0-9]/)) strength += 1;
+      if (password.match(/[^a-zA-Z0-9]/)) strength += 1;
+
+      // Update the strength bar and label
+      if (strength === 0) {
+        strengthBar.style.width = '0';
+        strengthBar.className = '';
+        strengthLabel.textContent = 'Password Strength: Too Short';
+      } else if (strength === 1) {
+        strengthBar.style.width = '25%';
+        strengthBar.className = 'weak';
+        strengthLabel.textContent = 'Password Strength: Weak';
+      } else if (strength === 2) {
+        strengthBar.style.width = '50%';
+        strengthBar.className = 'medium';
+        strengthLabel.textContent = 'Password Strength: Medium';
+      } else if (strength === 3) {
+        strengthBar.style.width = '75%';
+        strengthBar.className = 'medium';
+        strengthLabel.textContent = 'Password Strength: Medium';
+      } else if (strength === 4) {
+        strengthBar.style.width = '100%';
+        strengthBar.className = 'strong';
+        strengthLabel.textContent = 'Password Strength: Strong';
       }
     }
 
