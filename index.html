@@ -18,7 +18,10 @@
 
     body {
       font-family: 'Montserrat', sans-serif;
-      background: linear-gradient(135deg, #b2f7b1 0%, #c1f2d5 100%);
+      background-image: url('/IMG/Background.jpg'); /* Placeholder for background image */
+      background-size: cover;  /* Ensure the image covers the entire page */
+      background-position: center; /* Center the image */
+      background-repeat: no-repeat; /* Avoid image repetition */
       display: flex;
       justify-content: center;
       align-items: center;
@@ -26,19 +29,20 @@
     }
 
     .container {
-      width: 90%;
-      max-width: 1200px;
-      height: 80vh;
+      width: 70%; /* Reduced size */
+      max-width: 900px; /* Reduced size */
+      height: 70vh; /* Reduced height */
       display: flex;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
       border-radius: 15px;
       border: 2px solid #74ebd5;
       overflow: hidden;
+      background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent background for readability */
     }
 
     .left, .right {
       flex: 1;
-      padding: 60px;
+      padding: 40px; /* Reduced padding */
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -50,15 +54,15 @@
     }
 
     .left h1 {
-      font-size: 2.5rem;
+      font-size: 2rem; /* Slightly smaller */
       margin-bottom: 20px;
       color: #444;
     }
 
     .left p {
-      font-size: 1.1rem;
+      font-size: 1rem; /* Slightly smaller */
       color: #666;
-      line-height: 1.6;
+      line-height: 1.5;
     }
 
     .right {
@@ -67,26 +71,26 @@
     }
 
     .form-box {
-      max-width: 350px;
+      max-width: 300px; /* Reduced size */
       margin: 0 auto;
     }
 
     .form-box h2 {
-      font-size: 1.8rem;
-      margin-bottom: 30px;
+      font-size: 1.6rem;
+      margin-bottom: 20px;
       color: #333;
       text-align: center;
     }
 
     .input-box {
       position: relative;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
     }
 
     .input-box input {
       width: 100%;
-      padding: 10px 0;
-      font-size: 1rem;
+      padding: 8px 0; /* Reduced padding */
+      font-size: 0.9rem;
       border: none;
       border-bottom: 2px solid #aaa;
       background: none;
@@ -94,21 +98,22 @@
       transition: 0.4s;
     }
 
+    .input-box input:focus ~ label,
+    .input-box input:not(:placeholder-shown) ~ label,
+    .input-box input:valid ~ label {
+      top: -20px;
+      color: #74ebd5;
+      font-size: 0.9rem;
+    }
+
     .input-box label {
       position: absolute;
       top: 0;
       left: 0;
       color: #aaa;
-      font-size: 1rem;
+      font-size: 0.9rem;
       pointer-events: none;
       transition: 0.4s;
-    }
-
-    .input-box input:focus ~ label,
-    .input-box input:valid ~ label {
-      top: -20px;
-      color: #74ebd5;
-      font-size: 0.9rem;
     }
 
     .input-box .underline {
@@ -127,18 +132,21 @@
 
     .btn {
       width: 100%;
-      padding: 12px 0;
+      padding: 10px 0;
       background: #74ebd5;
       color: white;
       font-size: 1rem;
       border: none;
       border-radius: 50px;
       cursor: pointer;
-      transition: 0.4s;
+      transition: 0.3s;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Button shadow */
     }
 
     .btn:hover {
       background: #ACB6E5;
+      box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2); /* Enhanced hover effect */
+      transform: translateY(-3px); /* Slight lift effect */
     }
 
     .toggle-link {
@@ -318,19 +326,19 @@
         <h2>Sign Up</h2>
         <form id="signupFormElement">
           <div class="input-box">
-            <input type="text" id="signupFullName" required>
+            <input type="text" id="signupFullName" required placeholder=" ">
             <label>Full Name</label>
             <div class="underline"></div>
             <div class="error" id="signupFullNameError"></div>
           </div>
           <div class="input-box">
-            <input type="email" id="signupEmail" required>
+            <input type="email" id="signupEmail" required placeholder=" ">
             <label>Email</label>
             <div class="underline"></div>
             <div class="error" id="signupEmailError"></div>
           </div>
           <div class="input-box">
-            <input type="password" id="signupPassword" required oninput="checkPasswordStrength()">
+            <input type="password" id="signupPassword" required placeholder=" " oninput="checkPasswordStrength()">
             <label>Password</label>
             <div class="underline"></div>
             <div class="error" id="signupPasswordError"></div>
@@ -347,7 +355,7 @@
             <label for="showSignupPassword">Show Password</label>
           </div>
           <div class="input-box">
-            <input type="text" id="signupUsername" required>
+            <input type="text" id="signupUsername" required placeholder=" ">
             <label>Username</label>
             <div class="underline"></div>
             <div class="error" id="signupUsernameError"></div>
