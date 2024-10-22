@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -181,6 +182,7 @@
             from {
                 width: 0%;
             }
+
             to {
                 width: var(--progress-width, 0%);
             }
@@ -228,6 +230,70 @@
             background-color: #3f3cc8;
         }
 
+        /* Food Search Suggestions */
+        .suggestions {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            max-height: 150px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .suggestions li {
+            padding: 0.5rem;
+            cursor: pointer;
+            background-color: #fff;
+        }
+
+        .suggestions li:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Food Search Result */
+        #results {
+            display: none;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            background-color: #e9f5e9;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        #results img {
+            max-width: 100px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        #results .food-details {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+
+        #results .food-details div {
+            width: 100%;
+            margin: 0 10px;
+        }
+
+        #loading {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        #error-message {
+            color: red;
+            text-align: center;
+            margin-top: 1rem;
+            display: none;
+        }
+
         /* Mobile Responsive Styling for Calorie Counter */
         @media (max-width: 600px) {
             .container {
@@ -254,16 +320,87 @@
             .add-meal-button {
                 padding: 0.4rem;
             }
+
+            #results .food-details {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            #results .food-details div {
+                width: auto;
+                margin-bottom: 10px;
+            }
+        }
+
+        /* Food Search Input Styles */
+        #foodInput {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: border 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        #foodInput:focus {
+            border: 1px solid #4CAF50;
+            outline: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        #searchButton {
+            background-color: #4CAF50;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            display: inline-block;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        #searchButton:hover {
+            background-color: #3f8c45;
+            transform: scale(1.05);
+        }
+
+        /* Suggestions Styling */
+        .suggestions {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: white;
+            max-height: 200px;
+            overflow-y: auto;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .suggestions li {
+            padding: 0.75rem;
+            font-size: 1rem;
+            color: #333;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .suggestions li:hover {
+            background-color: #f0f0f0;
         }
     </style>
 </head>
+
 <body>
 
     <!-- Navigation Bar -->
     <header>
         <nav>
             <div class="logo">NutriFit Living</div>
-            <div class="menu-toggle">
+            <div class="menu-toggle" aria-label="Toggle menu">
                 <i class="fas fa-bars"></i>
             </div>
             <ul>
@@ -288,7 +425,7 @@
         <div class="section">
             <div class="section-header">
                 <h2>Daily Goal</h2>
-                <button id="toggleGoalEdit" class="icon-button">&#9660;</button>
+                <button id="toggleGoalEdit" class="icon-button" aria-label="Edit daily goal">&#9660;</button>
             </div>
             <input type="number" id="dailyGoal" class="input-field" placeholder="Set your daily calorie goal" style="display: none;" />
         </div>
@@ -308,7 +445,7 @@
             <div class="add-meal-inputs">
                 <input type="text" id="mealName" class="input-field" placeholder="Meal name" />
                 <input type="number" id="mealCalories" class="input-field" placeholder="Calories" />
-                <button id="addMealButton" class="add-meal-button">Add</button>
+                <button id="addMealButton" class="add-meal-button" aria-label="Add meal">Add</button>
             </div>
         </div>
 
@@ -316,6 +453,29 @@
             <h2>Meals</h2>
             <ul id="mealList" class="meal-list"></ul>
         </div>
+
+        <!-- Food Search Section -->
+        <div class="section">
+            <h2>Food Search</h2>
+            <input type="text" id="foodInput" class="input-field" placeholder="Search food" />
+            <ul id="suggestions" class="suggestions"></ul>
+            <button id="searchButton" class="add-meal-button">Search</button>
+        </div>
+
+        <!-- Food Search Result -->
+        <div id="results">
+            <img id="food-image" src="" alt="Food image">
+            <h3 id="food-name">Food Name</h3>
+            <div class="food-details">
+                <div>Calories: <span id="calories"></span></div>
+                <div>Proteins: <span id="proteins"></span></div>
+                <div>Fats: <span id="fats"></span></div>
+                <div>Carbohydrates: <span id="carbs"></span></div>
+            </div>
+        </div>
+
+        <div id="loading">Loading...</div>
+        <div id="error-message">Error retrieving food data.</div>
     </div>
 
     <!-- JavaScript for the toggle menu and calorie counter logic -->
@@ -328,67 +488,171 @@
             navUl.classList.toggle('active');
         });
 
-        // Calorie Counter Logic
-        let meals = [];
-        let dailyGoal = 2000;
-        let totalCalories = 0;
-
-        const mealList = document.getElementById('mealList');
-        const progressFill = document.getElementById('progressFill');
-        const caloriesConsumed = document.getElementById('caloriesConsumed');
-        const calorieGoalDisplay = document.getElementById('calorieGoalDisplay');
+        // Toggle Daily Goal Edit
+        const toggleGoalEdit = document.getElementById('toggleGoalEdit');
         const dailyGoalInput = document.getElementById('dailyGoal');
-        const toggleGoalEditButton = document.getElementById('toggleGoalEdit');
+        const calorieGoalDisplay = document.getElementById('calorieGoalDisplay');
+        let dailyCalorieGoal = 2000; // Default goal
 
-        document.getElementById('addMealButton').addEventListener('click', function () {
-            const mealName = document.getElementById('mealName').value;
-            const mealCalories = parseInt(document.getElementById('mealCalories').value);
+        toggleGoalEdit.addEventListener('click', () => {
+            dailyGoalInput.style.display = dailyGoalInput.style.display === 'none' ? 'block' : 'none';
+        });
 
-            if (mealName && mealCalories) {
-                meals.push({ name: mealName, calories: mealCalories });
-                totalCalories += mealCalories;
-                updateMeals();
-                updateProgress();
-                document.getElementById('mealName').value = '';
-                document.getElementById('mealCalories').value = '';
+        dailyGoalInput.addEventListener('input', function () {
+            dailyCalorieGoal = parseInt(dailyGoalInput.value) || 2000;
+            calorieGoalDisplay.textContent = dailyCalorieGoal + ' cal';
+            updateProgress();
+        });
+
+        // Adding Meals and Tracking Calories
+        let totalCaloriesConsumed = 0;
+        const caloriesConsumedDisplay = document.getElementById('caloriesConsumed');
+        const progressFill = document.getElementById('progressFill');
+        const mealList = document.getElementById('mealList');
+
+        const addMealButton = document.getElementById('addMealButton');
+        const mealNameInput = document.getElementById('mealName');
+        const mealCaloriesInput = document.getElementById('mealCalories');
+
+        addMealButton.addEventListener('click', function () {
+            const mealName = mealNameInput.value.trim();
+            const mealCalories = parseInt(mealCaloriesInput.value);
+
+            if (mealName && mealCalories && mealCalories > 0) {
+                // Add the meal to the meal list
+                const mealItem = document.createElement('li');
+                mealItem.className = 'meal-list-item';
+                mealItem.innerHTML = `
+                    <span>${mealName} (${mealCalories} cal)</span>
+                    <button class="delete-meal-btn" aria-label="Delete meal">✖</button>
+                `;
+                mealList.appendChild(mealItem);
+
+                // Update the total calories consumed
+                totalCaloriesConsumed += mealCalories;
+                updateCaloriesConsumed();
+
+                // Delete meal functionality
+                mealItem.querySelector('.delete-meal-btn').addEventListener('click', function () {
+                    totalCaloriesConsumed -= mealCalories;
+                    mealItem.remove();
+                    updateCaloriesConsumed();
+                });
+
+                // Clear the input fields
+                mealNameInput.value = '';
+                mealCaloriesInput.value = '';
+            } else {
+                alert('Please enter a valid meal name and calorie amount.');
             }
         });
 
-        function updateMeals() {
-            mealList.innerHTML = '';
-            meals.forEach((meal, index) => {
-                const li = document.createElement('li');
-                li.className = 'meal-list-item';
-                li.innerHTML = `<span>${meal.name}</span><span>${meal.calories} cal</span><button onclick="removeMeal(${index})">X</button>`;
-                mealList.appendChild(li);
-            });
-        }
-
-        function updateProgress() {
-            const progressPercent = (totalCalories / dailyGoal) * 100;
-            progressFill.style.setProperty('--progress-width', progressPercent + '%');
-            caloriesConsumed.innerText = totalCalories + ' cal';
-        }
-
-        function removeMeal(index) {
-            totalCalories -= meals[index].calories;
-            meals.splice(index, 1);
-            updateMeals();
+        // Update the calories consumed and the progress bar
+        function updateCaloriesConsumed() {
+            caloriesConsumedDisplay.textContent = totalCaloriesConsumed + ' cal';
             updateProgress();
         }
 
-        toggleGoalEditButton.addEventListener('click', function () {
-            if (dailyGoalInput.style.display === 'none') {
-                dailyGoalInput.style.display = 'block';
-                toggleGoalEditButton.innerHTML = '&#9650;';
+        // Update the progress bar
+        function updateProgress() {
+            const progressPercentage = (totalCaloriesConsumed / dailyCalorieGoal) * 100;
+            progressFill.style.setProperty('--progress-width', Math.min(progressPercentage, 100) + '%');
+        }
+
+        // Food Search and Suggestions
+        const foodInput = document.getElementById('foodInput');
+        const suggestionsList = document.getElementById('suggestions');
+        const searchButton = document.getElementById('searchButton');
+        const loadingElement = document.getElementById('loading');
+        const errorMessage = document.getElementById('error-message');
+        const resultCard = document.getElementById('results');
+        const foodImage = document.getElementById('food-image');
+
+        foodInput.addEventListener('input', function () {
+            const query = this.value;
+            if (query.length > 2) {
+                const apiUrl = "https://trackapi.nutritionix.com/v2/search/instant?query=" + query;
+
+                fetch(apiUrl, {
+                    method: "GET",
+                    headers: {
+                        "x-app-id": "2eb6eb6f",
+                        "x-app-key": "14ea7c7ef2a61f33851d4e78353cce08"
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        const suggestions = data.common;
+                        suggestionsList.innerHTML = '';
+                        suggestions.forEach(item => {
+                            const li = document.createElement('li');
+                            li.textContent = item.food_name;
+                            li.addEventListener('click', function () {
+                                foodInput.value = item.food_name;
+                                suggestionsList.style.display = 'none';
+                            });
+                            suggestionsList.appendChild(li);
+                        });
+
+                        suggestionsList.style.display = suggestions.length > 0 ? 'block' : 'none';
+                    });
             } else {
-                dailyGoal = parseInt(dailyGoalInput.value) || 2000;
-                calorieGoalDisplay.innerText = dailyGoal + ' cal';
-                dailyGoalInput.style.display = 'none';
-                toggleGoalEditButton.innerHTML = '&#9660;';
-                updateProgress();
+                suggestionsList.style.display = 'none';
+            }
+        });
+
+        searchButton.addEventListener('click', function () {
+            const food = foodInput.value;
+            const apiUrl = "https://trackapi.nutritionix.com/v2/natural/nutrients";
+
+            searchButton.classList.add('searching');
+            loadingElement.style.display = 'block';
+            errorMessage.style.display = 'none';
+            resultCard.style.display = 'none';
+
+            fetch(apiUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-app-id": "2eb6eb6f",
+                    "x-app-key": "14ea7c7ef2a61f33851d4e78353cce08"
+                },
+                body: JSON.stringify({
+                    query: food
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.foods && data.foods.length > 0) {
+                        const foodItem = data.foods[0];
+                        document.getElementById('food-name').innerText = foodItem.food_name;
+                        document.getElementById('calories').innerText = Math.round(foodItem.nf_calories);
+                        document.getElementById('proteins').innerText = Math.round(foodItem.nf_protein);
+                        document.getElementById('fats').innerText = Math.round(foodItem.nf_total_fat);
+                        document.getElementById('carbs').innerText = Math.round(foodItem.nf_total_carbohydrate);
+
+                        foodImage.src = foodItem.photo ? foodItem.photo.highres : 'default-image.jpg';
+                        resultCard.style.display = 'flex';
+                    } else {
+                        errorMessage.style.display = 'block';
+                    }
+                })
+                .catch(() => {
+                    errorMessage.style.display = 'block';
+                })
+                .finally(() => {
+                    searchButton.classList.remove('searching');
+                    loadingElement.style.display = 'none';
+                });
+        });
+
+        foodInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                searchButton.click();
             }
         });
     </script>
+
 </body>
+
 </html>
