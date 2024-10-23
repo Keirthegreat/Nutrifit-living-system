@@ -3,20 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <title>Profile - NutriFit Living</title>
+    <title>NutriFit Living - Your Personal Health & Fitness Platform</title>
+    <!-- Include Font Awesome and Google Fonts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" defer></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700|Montserrat:400,600&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-
+        /* Reset and base styles */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
         }
 
         body {
             font-family: 'Roboto', 'Montserrat', sans-serif;
+            line-height: 1.6;
+            color: #333;
             background-color: #f4f4f4;
         }
 
@@ -29,10 +31,6 @@
             --light-gray: #f4f4f4;
             --dark-gray: #333;
             --white: #fff;
-            --gradient-start: #b2f7b1;
-            --gradient-end: #c1f2d5;
-            --input-underline: #74ebd5;
-            --btn-hover: #ACB6E5;
         }
 
         /* Header and Navigation */
@@ -69,6 +67,18 @@
             font-size: 1.5rem;
             font-weight: bold;
             color: white;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+            animation-delay: 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
 
         .menu-toggle {
@@ -116,7 +126,14 @@
             width: 100%;
         }
 
-        /* Main Profile Section */
+        /* Main content */
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Profile Form */
         .container {
             max-width: 800px;
             width: 100%;
@@ -127,7 +144,7 @@
             margin: 30px auto;
         }
 
-        .container .title {
+        .title {
             font-size: 32px;
             font-weight: 700;
             margin-bottom: 30px;
@@ -135,27 +152,55 @@
             text-align: center;
         }
 
-        .content form .user-details {
+        /* Profile Picture */
+        .profile-picture-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-picture-section img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid var(--primary-green);
+        }
+
+        .profile-picture-section input[type="file"] {
+            display: none;
+        }
+
+        .profile-picture-section label {
+            display: inline-block;
+            background-color: var(--primary-green);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .user-details {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
             margin-top: 20px;
         }
 
-        .content form .input-box {
+        .input-box {
             margin-bottom: 25px;
             width: calc(50% - 15px);
             position: relative;
         }
 
-        .content form .input-box span.details {
+        .input-box span.details {
             display: block;
             font-weight: 500;
             margin-bottom: 8px;
             color: #333;
         }
 
-        .content form .input-box input {
+        .input-box input {
             height: 50px;
             width: 100%;
             padding: 0 15px;
@@ -165,16 +210,8 @@
             transition: border-color 0.3s ease;
         }
 
-        .content form .input-box input:focus {
-            border-color: #44f56a;
-        }
-
-        .content form .input-box .icon {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #999;
+        .input-box input:focus {
+            border-color: var(--primary-green);
         }
 
         /* Gender selection */
@@ -182,7 +219,7 @@
             margin: 25px 0;
         }
 
-        .gender-details .gender-title {
+        .gender-title {
             font-size: 20px;
             font-weight: 600;
             margin-bottom: 15px;
@@ -219,16 +256,8 @@
         }
 
         .category label input:checked + .dot {
-            background: #44f56a;
+            background: var(--primary-green);
             border-color: #fff;
-        }
-
-        .category label input:checked + .dot::after {
-            content: '\f00c';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            color: #fff;
-            font-size: 12px;
         }
 
         .button {
@@ -274,7 +303,7 @@
             }
 
             nav ul.active {
-                max-height: 600px; /* Ensure all items are visible */
+                max-height: 600px;
             }
 
             nav ul li {
@@ -291,53 +320,27 @@
                 border-bottom: 1px solid var(--light-gray);
             }
 
-            /* Center the logo when menu-toggle is active */
-            nav {
-                justify-content: center;
-            }
-
             .logo {
-                font-size: 1.5rem;
+                flex-grow: 1;
                 text-align: center;
-                width: 100%;
             }
 
-            .container {
-                padding: 20px;
-            }
-
-            .content form .user-details {
-                flex-direction: column;
-            }
-
-            .content form .input-box {
-                width: 100%;
+            .menu-toggle {
+                position: absolute;
+                top: 20px;
+                right: 20px;
             }
         }
 
         @media (max-width: 480px) {
-            .logo {
-                font-size: 1.2rem;
+            h1, h2, h3 {
+                font-size: 1.3rem;
             }
 
-            .title {
-                font-size: 28px;
-            }
-
-            .container {
-                padding: 15px;
-            }
-
-            .content form .input-box input {
-                font-size: 14px;
-                padding: 10px;
-            }
-
-            .button input {
-                font-size: 16px;
+            p, label, input, button {
+                font-size: 0.9rem;
             }
         }
-
     </style>
 </head>
 <body>
@@ -364,79 +367,163 @@
     <!-- Profile Form Content -->
     <div class="container">
         <div class="title">Profile</div>
+
+        <!-- Profile Picture Section -->
+        <div class="profile-picture-section">
+            <img src="https://via.placeholder.com/150" alt="Profile Picture" id="profilePic">
+            <br>
+            <label for="uploadImage">Upload Profile Picture</label>
+            <input type="file" id="uploadImage" accept="image/*">
+        </div>
+
         <div class="content">
-            <form action="#">
+            <form id="profileForm">
                 <div class="user-details">
                     <div class="input-box">
                         <span class="details">Full Name</span>
-                        <input type="text" placeholder="Enter your name" required>
-                        <i class="icon fas fa-user"></i>
+                        <input type="text" id="fullName" placeholder="Enter your name" required>
                     </div>
                     <div class="input-box">
                         <span class="details">Username</span>
-                        <input type="text" placeholder="Enter your username" required>
-                        <i class="icon fas fa-at"></i>
+                        <input type="text" id="username" placeholder="Enter your username" required>
                     </div>
                     <div class="input-box">
                         <span class="details">Email</span>
-                        <input type="email" placeholder="Enter your email" required>
-                        <i class="icon fas fa-envelope"></i>
+                        <input type="email" id="email" placeholder="Enter your email" required>
                     </div>
                     <div class="input-box">
                         <span class="details">Phone Number</span>
-                        <input type="tel" placeholder="Enter your number" required>
-                        <i class="icon fas fa-phone"></i>
+                        <input type="tel" id="phone" placeholder="Enter your number" required>
                     </div>
                     <div class="input-box">
                         <span class="details">Location</span>
-                        <input type="text" placeholder="Enter your location" required>
-                        <i class="icon fas fa-map-marker-alt"></i>
+                        <input type="text" id="location" placeholder="Enter your location" required>
                     </div>
                     <div class="input-box">
                         <span class="details">Date of Birth</span>
-                        <input type="date" required>
-                        <i class="icon fas fa-calendar-alt"></i>
+                        <input type="date" id="dob" required>
                     </div>
                     <div class="input-box">
                         <span class="details">Height (cm)</span>
-                        <input type="number" placeholder="Enter your height" required>
-                        <i class="icon fas fa-ruler-vertical"></i>
+                        <input type="number" id="height" placeholder="Enter your height" required>
                     </div>
                     <div class="input-box">
                         <span class="details">Weight (kg)</span>
-                        <input type="number" placeholder="Enter your weight" required>
-                        <i class="icon fas fa-weight"></i>
+                        <input type="number" id="weight" placeholder="Enter your weight" required>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Target Weight (kg)</span>
+                        <input type="number" id="targetWeight" placeholder="Enter your target weight" required>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Ideal BMI</span>
+                        <input type="number" id="idealBMI" step="0.1" placeholder="Enter your ideal BMI" required>
                     </div>
                 </div>
+
+                <!-- Gender Section -->
                 <div class="gender-details">
                     <span class="gender-title">Gender</span>
                     <div class="category">
                         <label>
-                            <input type="radio" name="gender" id="dot-1">
+                            <input type="radio" name="gender" id="dot-1" value="Male">
                             <span class="dot"></span>
                             <span class="gender">Male</span>
                         </label>
                         <label>
-                            <input type="radio" name="gender" id="dot-2">
+                            <input type="radio" name="gender" id="dot-2" value="Female">
                             <span class="dot"></span>
                             <span class="gender">Female</span>
                         </label>
                         <label>
-                            <input type="radio" name="gender" id="dot-3">
+                            <input type="radio" name="gender" id="dot-3" value="Prefer not to say">
                             <span class="dot"></span>
                             <span class="gender">Prefer not to say</span>
                         </label>
                     </div>
                 </div>
+
                 <div class="button">
-                    <input type="submit" value="Submit">
+                    <input type="button" value="Save" onclick="saveProfile()">
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- JavaScript for Mobile Menu Toggle -->
+    <!-- Scripts for profile picture upload -->
     <script>
+        const uploadImage = document.getElementById('uploadImage');
+        const profilePic = document.getElementById('profilePic');
+
+        uploadImage.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    profilePic.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Save profile information temporarily
+        function saveProfile() {
+            const fullName = document.getElementById('fullName').value;
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const location = document.getElementById('location').value;
+            const dob = document.getElementById('dob').value;
+            const height = document.getElementById('height').value;
+            const weight = document.getElementById('weight').value;
+            const targetWeight = document.getElementById('targetWeight').value;
+            const idealBMI = document.getElementById('idealBMI').value;
+            const gender = document.querySelector('input[name="gender"]:checked')?.value;
+
+            // Save the information temporarily in localStorage
+            localStorage.setItem('profileFullName', fullName);
+            localStorage.setItem('profileUsername', username);
+            localStorage.setItem('profileEmail', email);
+            localStorage.setItem('profilePhone', phone);
+            localStorage.setItem('profileLocation', location);
+            localStorage.setItem('profileDOB', dob);
+            localStorage.setItem('profileHeight', height);
+            localStorage.setItem('profileWeight', weight);
+            localStorage.setItem('profileTargetWeight', targetWeight);
+            localStorage.setItem('profileIdealBMI', idealBMI);
+            localStorage.setItem('profileGender', gender);
+
+            alert('Profile saved temporarily!');
+        }
+
+        // Load profile data from localStorage if available
+        window.onload = function() {
+            const savedFullName = localStorage.getItem('profileFullName');
+            const savedUsername = localStorage.getItem('profileUsername');
+            const savedEmail = localStorage.getItem('profileEmail');
+            const savedPhone = localStorage.getItem('profilePhone');
+            const savedLocation = localStorage.getItem('profileLocation');
+            const savedDOB = localStorage.getItem('profileDOB');
+            const savedHeight = localStorage.getItem('profileHeight');
+            const savedWeight = localStorage.getItem('profileWeight');
+            const savedTargetWeight = localStorage.getItem('profileTargetWeight');
+            const savedIdealBMI = localStorage.getItem('profileIdealBMI');
+            const savedGender = localStorage.getItem('profileGender');
+
+            if (savedFullName) document.getElementById('fullName').value = savedFullName;
+            if (savedUsername) document.getElementById('username').value = savedUsername;
+            if (savedEmail) document.getElementById('email').value = savedEmail;
+            if (savedPhone) document.getElementById('phone').value = savedPhone;
+            if (savedLocation) document.getElementById('location').value = savedLocation;
+            if (savedDOB) document.getElementById('dob').value = savedDOB;
+            if (savedHeight) document.getElementById('height').value = savedHeight;
+            if (savedWeight) document.getElementById('weight').value = savedWeight;
+            if (savedTargetWeight) document.getElementById('targetWeight').value = savedTargetWeight;
+            if (savedIdealBMI) document.getElementById('idealBMI').value = savedIdealBMI;
+            if (savedGender) document.querySelector(`input[name="gender"][value="${savedGender}"]`).checked = true;
+        };
+
+        // Burger Menu Toggle
         document.querySelector('.menu-toggle').addEventListener('click', function() {
             document.querySelector('nav ul').classList.toggle('active');
         });
