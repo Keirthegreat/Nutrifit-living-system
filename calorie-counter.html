@@ -240,7 +240,12 @@
             border-radius: 4px;
             max-height: 150px;
             overflow-y: auto;
-            display: none;
+            display: none; /* Start hidden */
+            position: absolute; /* Position suggestions absolutely */
+            background: white; /* Ensure suggestions background is white */
+            z-index: 1000; /* Keep suggestions above other elements */
+            top: 100%; /* Position it below the input field */
+            width: calc(100% - 2px); /* Match the input width */
         }
 
         .suggestions li {
@@ -465,9 +470,9 @@
             <div class="search-section">
                 <input type="text" id="foodInput" class="input-field" placeholder="Search food">
                 <button id="searchButton" class="add-meal-button" aria-label="Search"><i class="fas fa-search"></i></button>
+                <ul id="suggestions" class="suggestions"></ul> <!-- Suggestions list placed correctly inside the search-section -->
             </div>
         </div>
-        <ul id="suggestions" class="suggestions"></ul>
 
         <!-- Loading Animation -->
         <div id="loading" class="spinner"></div>
@@ -602,15 +607,15 @@
                             li.textContent = item.food_name;
                             li.addEventListener('click', function () {
                                 foodInput.value = item.food_name;
-                                suggestionsList.style.display = 'none';
+                                suggestionsList.style.display = 'none'; // Hide suggestions when selected
                             });
                             suggestionsList.appendChild(li);
                         });
 
-                        suggestionsList.style.display = suggestions.length > 0 ? 'block' : 'none';
+                        suggestionsList.style.display = suggestions.length > 0 ? 'block' : 'none'; // Show or hide suggestions
                     });
             } else {
-                suggestionsList.style.display = 'none';
+                suggestionsList.style.display = 'none'; // Hide suggestions when input is empty or too short
             }
         });
 
