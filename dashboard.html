@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriFit Living - Your Personal Health & Fitness Platform</title>
+    <!-- Include Font Awesome and Google Fonts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" defer></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700|Montserrat:400,600&display=swap" rel="stylesheet">
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', 'Montserrat', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+        }
+
+        /* Color scheme */
+        :root {
+            --primary-green: #4CAF50;
+            --secondary-green: #45a049;
+            --primary-blue: #2196F3;
+            --secondary-blue: #1e88e5;
+            --light-gray: #f4f4f4;
+            --dark-gray: #333;
+            --white: #fff;
+            --gradient-start: #b2f7b1;
+            --gradient-end: #c1f2d5;
+            --input-underline: #74ebd5;
+            --btn-hover: #ACB6E5;
+        }
+
+        /* Header and Navigation */
+        header {
+            background-color: var(--primary-green);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: slideDown 0.5s ease forwards;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+            animation-delay: 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .menu-toggle {
+            display: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 1rem;
+            position: relative;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease, transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        nav ul li a:hover {
+            color: var(--light-gray);
+            transform: scale(1.1);
+        }
+
+        /* Add a bottom border effect on hover */
+        nav ul li a::after {
+            content: '';
+            display: block;
+            height: 2px;
+            background: var(--light-gray);
+            width: 0;
+            transition: width 0.4s ease;
+            position: absolute;
+            left: 0;
+            bottom: -5px;
+        }
+
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+
+        /* Main content */
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Sections */
+        section {
+            margin-bottom: 2rem;
+        }
+
+        /* Home Section */
+        #home {
+            text-align: center;
+            padding: 2rem 0;
+            background-color: var(--light-gray);
+            border-radius: 10px;
+        }
+
+        #home h1 {
+            font-size: 2.5rem;
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+        }
+
+        #home p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Calorie Counter Section */
+        #calorie-counter {
+            background-color: var(--white);
+            padding: 3rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        #calorie-counter h1 {
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            color: var(--primary-green);
+        }
+
+        /* Button Styling */
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            margin-top: 1.5rem;
+        }
+
+        button:hover {
+            background-color: var(--secondary-blue);
+        }
+
+        /* Responsive Design Enhancements */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+                color: white;
+                cursor: pointer;
+            }
+
+            nav ul {
+                flex-direction: column;
+                background-color: var(--primary-green);
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease;
+            }
+
+            nav ul.active {
+                max-height: 600px; /* Increase this to make sure all items show */
+            }
+
+            nav ul li {
+                margin: 0;
+                width: 100%;
+                text-align: center;
+            }
+
+            nav ul li a {
+                padding: 1rem;
+                display: block;
+                width: 100%;
+                color: white;
+                border-bottom: 1px solid var(--light-gray);
+            }
+
+            nav ul li a:hover {
+                color: var(--light-gray);
+                transform: scale(1.1);
+            }
+
+            /* Center the logo on mobile screens */
+            .logo {
+                text-align: center;
+                margin: 0 auto;
+                flex: 1;
+            }
+        }
+
+        /* Coming Soon Section */
+        .coming-soon {
+            font-size: 4rem;
+            color: var(--primary-green);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .dots {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .dot {
+            width: 20px;
+            height: 20px;
+            background-color: var(--primary-green);
+            border-radius: 50%;
+            animation: bounce 1.5s infinite;
+        }
+
+        .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Emoji Mood Changer */
+        .emoji-container {
+            font-size: 8rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin: 20px auto; /* Center the emoji horizontally */
+            text-align: center; /* Ensure emoji is centered on the page */
+            display: block; /* Ensure emoji takes up full width */
+        }
+
+        .emoji-container:hover {
+            transform: scale(1.1);
+        }
+
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 480px) {
+            .coming-soon {
+                font-size: 3rem;
+            }
+
+            .dot {
+                width: 15px;
+                height: 15px;
+            }
+
+            .emoji-container {
+                font-size: 6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+        <nav>
+            <div class="logo">NutriFit Living</div>
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+            <ul>
+                <li><a href="main.html">Home</a></li>
+                <li><a href="bmi-calculator.html">BMI Calculator</a></li>
+                <li><a href="calorie-counter.html">Calorie Counter</a></li>
+                <li><a href="fit-program.html">Fit Program</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="community.html">Community</a></li>
+                <li><a href="profile.html">Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+
+  <main>
+    <div class="coming-soon">Coming Soon</div>
+    <div class="dots">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+
+    <!-- Emoji Mood Changer -->
+    <div class="emoji-container" id="emoji">😀</div>
+  </main>
+
+  <script>
+    // Toggle Menu for mobile
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navUl = document.querySelector('nav ul');
+    
+    menuToggle.addEventListener('click', () => {
+      navUl.classList.toggle('active');
+    });
+
+    // Automated emoji mood changer
+    const emoji = document.getElementById('emoji');
+    const moods = ['😀', '😐', '😢']; // Array of emojis for moods
+    let moodIndex = 0;
+
+    function changeMood() {
+      moodIndex = (moodIndex + 1) % moods.length;
+      emoji.textContent = moods[moodIndex];
+    }
+
+    // Change the emoji every 2 seconds
+    setInterval(changeMood, 2000);
+  </script>
+
+</body>
+</html>
