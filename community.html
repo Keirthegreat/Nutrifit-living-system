@@ -301,6 +301,25 @@
             transform: scale(1.1);
         }
 
+        /* Play Button */
+        .play-game-btn {
+            display: block;
+            width: 50%;
+            margin: 2rem auto;
+            padding: 15px 25px;
+            background-color: var(--primary-green);
+            color: white;
+            text-align: center;
+            font-size: 1.5rem;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .play-game-btn:hover {
+            background-color: var(--secondary-green);
+        }
+
         /* Responsive adjustments for smaller screens */
         @media (max-width: 480px) {
             .coming-soon {
@@ -314,6 +333,11 @@
 
             .emoji-container {
                 font-size: 6rem;
+            }
+
+            .play-game-btn {
+                width: 70%;
+                font-size: 1.2rem;
             }
         }
     </style>
@@ -348,6 +372,9 @@
 
     <!-- Emoji Mood Changer -->
     <div class="emoji-container" id="emoji">😀</div>
+
+    <!-- Play Game Button -->
+    <a href="rocket.html" class="play-game-btn">Play a Game</a>
   </main>
 
   <script>
