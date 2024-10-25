@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html>
 <head>
     <title>Space Shooter</title>
@@ -12,80 +12,125 @@
             align-items: center;
             height: 100vh;
             font-family: Arial, sans-serif;
+            position: relative;
         }
-        
+
         #gameCanvas {
             border: 2px solid #444;
             background: linear-gradient(to bottom, #000033, #000066);
         }
-        
+
         #gameOver {
             position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             color: white;
             font-size: 48px;
             display: none;
             text-align: center;
         }
-        
-        #score {
+
+        #score, #highScore {
             position: absolute;
             top: 20px;
-            left: 20px;
             color: white;
             font-size: 24px;
         }
-        
+
+        #score {
+            left: 20px;
+        }
+
+        #highScore {
+            right: 20px;
+        }
+
         button {
             background: #4CAF50;
             border: none;
             color: white;
-            padding: 15px 32px;
+            padding: 15px;
             text-align: center;
             text-decoration: none;
-            display: inline-block;
             font-size: 16px;
-            margin: 4px 2px;
             cursor: pointer;
             border-radius: 4px;
         }
-        
+
         button:hover {
             background: #45a049;
         }
+
+        /* Mobile Controls */
+        #controls {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .control-btn {
+            width: 60px;
+            height: 60px;
+            font-size: 24px;
+        }
+
     </style>
 </head>
 <body>
     <div id="score">Score: 0</div>
+    <div id="highScore">High Score: 0</div>
     <canvas id="gameCanvas" width="800" height="600"></canvas>
     <div id="gameOver">
         Game Over!<br>
         <button onclick="restartGame()">Restart</button>
     </div>
 
+    <!-- Mobile controls -->
+    <div id="controls">
+        <button class="control-btn" id="leftBtn">&#8592;</button>
+        <button class="control-btn" id="rightBtn">&#8594;</button>
+        <button class="control-btn" id="fireBtn">Fire</button>
+    </div>
+
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const scoreElement = document.getElementById('score');
+        const highScoreElement = document.getElementById('highScore');
         const gameOverElement = document.getElementById('gameOver');
 
         let score = 0;
+        let highScore = 0;
         let gameRunning = true;
 
-        // Player
+        // Player (rocket)
         const player = {
             x: canvas.width / 2,
-            y: canvas.height - 50,
-            width: 60,
-            height: 80,
-            speed: 5
+            y: canvas.height - 80, // Adjusted so it's above the bottom
+            width: 40,
+            height: 60,
+            speed: 5,
+            shield: false,  // Shield power-up
+            weapon: 'normal'  // Default weapon
         };
 
         // Game objects
         let bullets = [];
+        let alienBullets = [];
         let aliens = [];
         let particles = [];
+        let powerUps = [];
         const bulletSpeed = 7;
         const alienSpeed = 2;
+        const alienBulletSpeed = 3;
+        const powerUpTypes = ['laser', 'shotgun', 'machinegun', 'shield'];
+        const powerUpSpeed = 2;
+        let fireRate = 300; // Default fire rate (lower is faster)
 
         // Controls
         const keys = {
@@ -94,7 +139,7 @@
             Space: false
         };
 
-        // Event listeners
+        // Event listeners for keyboard
         document.addEventListener('keydown', e => {
             if (keys.hasOwnProperty(e.code)) {
                 keys[e.code] = true;
@@ -107,15 +152,34 @@
             }
         });
 
+        // Mobile controls
+        document.getElementById('leftBtn').addEventListener('touchstart', () => keys.ArrowLeft = true);
+        document.getElementById('leftBtn').addEventListener('touchend', () => keys.ArrowLeft = false);
+        document.getElementById('rightBtn').addEventListener('touchstart', () => keys.ArrowRight = true);
+        document.getElementById('rightBtn').addEventListener('touchend', () => keys.ArrowRight = false);
+        document.getElementById('fireBtn').addEventListener('touchstart', () => keys.Space = true);
+
         function createAlien() {
             if (aliens.length < 10) {
                 aliens.push({
-                    x: Math.random() * (canvas.width - 30),
+                    x: Math.random() * (canvas.width - 40),
                     y: 0,
                     width: 40,
                     height: 40
                 });
             }
+        }
+
+        // Create power-ups
+        function createPowerUp() {
+            const type = powerUpTypes[Math.floor(Math.random() * powerUpTypes.length)];
+            powerUps.push({
+                x: Math.random() * (canvas.width - 30),
+                y: 0,
+                width: 30,
+                height: 30,
+                type
+            });
         }
 
         function createParticles(x, y, color) {
@@ -131,6 +195,7 @@
             }
         }
 
+        // Function to draw the player rocket
         function drawPlayer() {
             const x = player.x;
             const y = player.y;
@@ -139,8 +204,8 @@
             ctx.fillStyle = '#4a9eff';
             ctx.beginPath();
             ctx.moveTo(x, y);
-            ctx.lineTo(x - 20, y + 60);
-            ctx.lineTo(x + 20, y + 60);
+            ctx.lineTo(x - 20, y + 40);
+            ctx.lineTo(x + 20, y + 40);
             ctx.closePath();
             ctx.fill();
 
@@ -153,41 +218,22 @@
             ctx.closePath();
             ctx.fill();
 
-            // Left wing
-            ctx.fillStyle = '#2979ff';
-            ctx.beginPath();
-            ctx.moveTo(x - 20, y + 40);
-            ctx.lineTo(x - 30, y + 60);
-            ctx.lineTo(x - 20, y + 60);
-            ctx.closePath();
-            ctx.fill();
-
-            // Right wing
-            ctx.beginPath();
-            ctx.moveTo(x + 20, y + 40);
-            ctx.lineTo(x + 30, y + 60);
-            ctx.lineTo(x + 20, y + 60);
-            ctx.closePath();
-            ctx.fill();
-
             // Engine glow
             ctx.fillStyle = '#ff9500';
             ctx.beginPath();
-            ctx.moveTo(x - 10, y + 60);
-            ctx.lineTo(x + 10, y + 60);
-            ctx.lineTo(x, y + 70);
+            ctx.moveTo(x - 10, y + 40);
+            ctx.lineTo(x + 10, y + 40);
+            ctx.lineTo(x, y + 50);
             ctx.closePath();
             ctx.fill();
 
-            // Window
-            ctx.fillStyle = '#white';
-            ctx.beginPath();
-            ctx.arc(x, y + 25, 5, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Engine particles
-            if (Math.random() > 0.5) {
-                createParticles(x, y + 70, "255,150,0");
+            // Draw shield if active
+            if (player.shield) {
+                ctx.strokeStyle = '#00ff00';
+                ctx.lineWidth = 5;
+                ctx.beginPath();
+                ctx.arc(player.x, player.y + 20, 40, 0, Math.PI * 2);
+                ctx.stroke();
             }
         }
 
@@ -202,6 +248,12 @@
                 ctx.fillStyle = 'rgba(0, 255, 0, 0.3)';
                 ctx.fillRect(bullet.x - 4, bullet.y - 15, 8, 15);
             });
+
+            // Alien bullets
+            ctx.fillStyle = '#ff0000';
+            alienBullets.forEach(bullet => {
+                ctx.fillRect(bullet.x - 2, bullet.y, 4, 15);
+            });
         }
 
         function drawAliens() {
@@ -210,7 +262,7 @@
                 // Alien body
                 ctx.fillStyle = '#ff0000';
                 ctx.beginPath();
-                ctx.moveTo(alien.x + alien.width/2, alien.y);
+                ctx.moveTo(alien.x + alien.width / 2, alien.y);
                 ctx.lineTo(alien.x, alien.y + alien.height);
                 ctx.lineTo(alien.x + alien.width, alien.y + alien.height);
                 ctx.closePath();
@@ -219,8 +271,23 @@
                 // Alien eye
                 ctx.fillStyle = '#ffffff';
                 ctx.beginPath();
-                ctx.arc(alien.x + alien.width/2, alien.y + alien.height/2, 5, 0, Math.PI * 2);
+                ctx.arc(alien.x + alien.width / 2, alien.y + alien.height / 2, 5, 0, Math.PI * 2);
                 ctx.fill();
+
+                // Aliens randomly shoot
+                if (Math.random() < 0.01) {
+                    alienBullets.push({
+                        x: alien.x + alien.width / 2,
+                        y: alien.y + alien.height
+                    });
+                }
+            });
+        }
+
+        function drawPowerUps() {
+            powerUps.forEach(powerUp => {
+                ctx.fillStyle = powerUp.type === 'shield' ? '#00ff00' : '#ffff00';
+                ctx.fillRect(powerUp.x, powerUp.y, powerUp.width, powerUp.height);
             });
         }
 
@@ -244,6 +311,7 @@
         }
 
         function checkCollisions() {
+            // Bullet collisions with aliens
             for (let i = bullets.length - 1; i >= 0; i--) {
                 const bullet = bullets[i];
                 for (let j = aliens.length - 1; j >= 0; j--) {
@@ -252,12 +320,31 @@
                         bullet.x < alien.x + alien.width &&
                         bullet.y > alien.y && 
                         bullet.y < alien.y + alien.height) {
-                        createParticles(alien.x + alien.width/2, alien.y + alien.height/2, "255,0,0");
+                        createParticles(alien.x + alien.width / 2, alien.y + alien.height / 2, "255,0,0");
                         bullets.splice(i, 1);
                         aliens.splice(j, 1);
                         score += 100;
                         scoreElement.textContent = `Score: ${score}`;
+                        if (score > highScore) {
+                            highScore = score;
+                            highScoreElement.textContent = `High Score: ${highScore}`;
+                        }
                         break;
+                    }
+                }
+            }
+
+            // Check if alien bullets hit the player
+            for (let i = alienBullets.length - 1; i >= 0; i--) {
+                const bullet = alienBullets[i];
+                if (bullet.y + 15 > player.y &&
+                    bullet.x > player.x - player.width / 2 &&
+                    bullet.x < player.x + player.width / 2) {
+                    if (player.shield) {
+                        player.shield = false; // Shield protects from one hit
+                        alienBullets.splice(i, 1);
+                    } else {
+                        gameOver();
                     }
                 }
             }
@@ -265,11 +352,54 @@
             // Check for alien-player collision
             aliens.forEach(alien => {
                 if (alien.y + alien.height > player.y &&
-                    alien.x < player.x + player.width/2 &&
-                    alien.x + alien.width > player.x - player.width/2) {
-                    gameOver();
+                    alien.x < player.x + player.width / 2 &&
+                    alien.x + alien.width > player.x - player.width / 2) {
+                    if (player.shield) {
+                        player.shield = false; // Shield protects from one collision
+                    } else {
+                        gameOver();
+                    }
                 }
             });
+
+            // Check for player collecting power-ups
+            for (let i = powerUps.length - 1; i >= 0; i--) {
+                const powerUp = powerUps[i];
+                if (powerUp.y + powerUp.height > player.y &&
+                    powerUp.x > player.x - player.width / 2 &&
+                    powerUp.x < player.x + player.width / 2) {
+                    applyPowerUp(powerUp.type);
+                    powerUps.splice(i, 1);
+                }
+            }
+        }
+
+        function applyPowerUp(type) {
+            switch (type) {
+                case 'laser':
+                    player.weapon = 'laser';
+                    fireRate = 500;
+                    setTimeout(() => {
+                        player.weapon = 'normal';
+                        fireRate = 300;
+                    }, 10000);  // Lasts 10 seconds
+                    break;
+                case 'shotgun':
+                    player.weapon = 'shotgun';
+                    setTimeout(() => player.weapon = 'normal', 10000);
+                    break;
+                case 'machinegun':
+                    player.weapon = 'machinegun';
+                    fireRate = 100;
+                    setTimeout(() => {
+                        player.weapon = 'normal';
+                        fireRate = 300;
+                    }, 10000);
+                    break;
+                case 'shield':
+                    player.shield = true;
+                    break;
+            }
         }
 
         function gameOver() {
@@ -283,8 +413,10 @@
             gameOverElement.style.display = 'none';
             player.x = canvas.width / 2;
             bullets = [];
+            alienBullets = [];
             aliens = [];
             particles = [];
+            powerUps = [];
             gameRunning = true;
             animate();
         }
@@ -297,16 +429,18 @@
                 player.x += player.speed;
             }
             if (keys.Space && bullets.length < 5) {
-                bullets.push({
-                    x: player.x,
-                    y: player.y
-                });
+                shootBullets();
                 keys.Space = false;
             }
 
             bullets = bullets.filter(bullet => {
                 bullet.y -= bulletSpeed;
                 return bullet.y > 0;
+            });
+
+            alienBullets = alienBullets.filter(bullet => {
+                bullet.y += alienBulletSpeed;
+                return bullet.y < canvas.height;
             });
 
             aliens.forEach(alien => {
@@ -319,8 +453,36 @@
                 createAlien();
             }
 
+            if (Math.random() < 0.01) {
+                createPowerUp();
+            }
+
+            powerUps.forEach(powerUp => {
+                powerUp.y += powerUpSpeed;
+            });
+
             updateParticles();
             checkCollisions();
+        }
+
+        function shootBullets() {
+            switch (player.weapon) {
+                case 'laser':
+                    bullets.push({ x: player.x, y: player.y });
+                    break;
+                case 'shotgun':
+                    bullets.push({ x: player.x - 10, y: player.y });
+                    bullets.push({ x: player.x, y: player.y });
+                    bullets.push({ x: player.x + 10, y: player.y });
+                    break;
+                case 'machinegun':
+                    bullets.push({ x: player.x, y: player.y });
+                    setTimeout(() => keys.Space = true, fireRate);  // Keep firing in machinegun mode
+                    break;
+                default:
+                    bullets.push({ x: player.x, y: player.y });
+                    break;
+            }
         }
 
         function draw() {
@@ -328,6 +490,7 @@
             drawPlayer();
             drawBullets();
             drawAliens();
+            drawPowerUps();
             drawParticles();
         }
 
