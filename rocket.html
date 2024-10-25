@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Space Shooter</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        
+        #gameCanvas {
+            border: 2px solid #444;
+            background: linear-gradient(to bottom, #000033, #000066);
+        }
+        
+        #gameOver {
+            position: absolute;
+            color: white;
+            font-size: 48px;
+            display: none;
+            text-align: center;
+        }
+        
+        #score {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-size: 24px;
+        }
+        
+        button {
+            background: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        
+        button:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div id="score">Score: 0</div>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <div id="gameOver">
+        Game Over!<br>
+        <button onclick="restartGame()">Restart</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score');
+        const gameOverElement = document.getElementById('gameOver');
+
+        let score = 0;
+        let gameRunning = true;
+
+        // Player
+        const player = {
+            x: canvas.width / 2,
+            y: canvas.height - 50,
+            width: 60,
+            height: 80,
+            speed: 5
+        };
+
+        // Game objects
+        let bullets = [];
+        let aliens = [];
+        let particles = [];
+        const bulletSpeed = 7;
+        const alienSpeed = 2;
+
+        // Controls
+        const keys = {
+            ArrowLeft: false,
+            ArrowRight: false,
+            Space: false
+        };
+
+        // Event listeners
+        document.addEventListener('keydown', e => {
+            if (keys.hasOwnProperty(e.code)) {
+                keys[e.code] = true;
+            }
+        });
+
+        document.addEventListener('keyup', e => {
+            if (keys.hasOwnProperty(e.code)) {
+                keys[e.code] = false;
+            }
+        });
+
+        function createAlien() {
+            if (aliens.length < 10) {
+                aliens.push({
+                    x: Math.random() * (canvas.width - 30),
+                    y: 0,
+                    width: 40,
+                    height: 40
+                });
+            }
+        }
+
+        function createParticles(x, y, color) {
+            for (let i = 0; i < 10; i++) {
+                particles.push({
+                    x,
+                    y,
+                    vx: (Math.random() - 0.5) * 4,
+                    vy: (Math.random() - 0.5) * 4,
+                    life: 1,
+                    color
+                });
+            }
+        }
+
+        function drawPlayer() {
+            const x = player.x;
+            const y = player.y;
+            
+            // Main body of the rocket
+            ctx.fillStyle = '#4a9eff';
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x - 20, y + 60);
+            ctx.lineTo(x + 20, y + 60);
+            ctx.closePath();
+            ctx.fill();
+
+            // Rocket nose cone
+            ctx.fillStyle = '#ff4444';
+            ctx.beginPath();
+            ctx.moveTo(x, y - 10);
+            ctx.lineTo(x - 10, y + 15);
+            ctx.lineTo(x + 10, y + 15);
+            ctx.closePath();
+            ctx.fill();
+
+            // Left wing
+            ctx.fillStyle = '#2979ff';
+            ctx.beginPath();
+            ctx.moveTo(x - 20, y + 40);
+            ctx.lineTo(x - 30, y + 60);
+            ctx.lineTo(x - 20, y + 60);
+            ctx.closePath();
+            ctx.fill();
+
+            // Right wing
+            ctx.beginPath();
+            ctx.moveTo(x + 20, y + 40);
+            ctx.lineTo(x + 30, y + 60);
+            ctx.lineTo(x + 20, y + 60);
+            ctx.closePath();
+            ctx.fill();
+
+            // Engine glow
+            ctx.fillStyle = '#ff9500';
+            ctx.beginPath();
+            ctx.moveTo(x - 10, y + 60);
+            ctx.lineTo(x + 10, y + 60);
+            ctx.lineTo(x, y + 70);
+            ctx.closePath();
+            ctx.fill();
+
+            // Window
+            ctx.fillStyle = '#white';
+            ctx.beginPath();
+            ctx.arc(x, y + 25, 5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Engine particles
+            if (Math.random() > 0.5) {
+                createParticles(x, y + 70, "255,150,0");
+            }
+        }
+
+        function drawBullets() {
+            ctx.fillStyle = '#fff';
+            bullets.forEach(bullet => {
+                // Laser-like bullets
+                ctx.fillStyle = '#00ff00';
+                ctx.fillRect(bullet.x - 2, bullet.y - 15, 4, 15);
+                
+                // Laser glow effect
+                ctx.fillStyle = 'rgba(0, 255, 0, 0.3)';
+                ctx.fillRect(bullet.x - 4, bullet.y - 15, 8, 15);
+            });
+        }
+
+        function drawAliens() {
+            ctx.fillStyle = '#ff0000';
+            aliens.forEach(alien => {
+                // Alien body
+                ctx.fillStyle = '#ff0000';
+                ctx.beginPath();
+                ctx.moveTo(alien.x + alien.width/2, alien.y);
+                ctx.lineTo(alien.x, alien.y + alien.height);
+                ctx.lineTo(alien.x + alien.width, alien.y + alien.height);
+                ctx.closePath();
+                ctx.fill();
+
+                // Alien eye
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(alien.x + alien.width/2, alien.y + alien.height/2, 5, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        function drawParticles() {
+            particles.forEach(particle => {
+                ctx.fillStyle = `rgba(${particle.color}, ${particle.life})`;
+                ctx.fillRect(particle.x - 2, particle.y - 2, 4, 4);
+            });
+        }
+
+        function updateParticles() {
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const particle = particles[i];
+                particle.x += particle.vx;
+                particle.y += particle.vy;
+                particle.life -= 0.02;
+                if (particle.life <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+        }
+
+        function checkCollisions() {
+            for (let i = bullets.length - 1; i >= 0; i--) {
+                const bullet = bullets[i];
+                for (let j = aliens.length - 1; j >= 0; j--) {
+                    const alien = aliens[j];
+                    if (bullet.x > alien.x && 
+                        bullet.x < alien.x + alien.width &&
+                        bullet.y > alien.y && 
+                        bullet.y < alien.y + alien.height) {
+                        createParticles(alien.x + alien.width/2, alien.y + alien.height/2, "255,0,0");
+                        bullets.splice(i, 1);
+                        aliens.splice(j, 1);
+                        score += 100;
+                        scoreElement.textContent = `Score: ${score}`;
+                        break;
+                    }
+                }
+            }
+
+            // Check for alien-player collision
+            aliens.forEach(alien => {
+                if (alien.y + alien.height > player.y &&
+                    alien.x < player.x + player.width/2 &&
+                    alien.x + alien.width > player.x - player.width/2) {
+                    gameOver();
+                }
+            });
+        }
+
+        function gameOver() {
+            gameRunning = false;
+            gameOverElement.style.display = 'block';
+        }
+
+        function restartGame() {
+            score = 0;
+            scoreElement.textContent = `Score: ${score}`;
+            gameOverElement.style.display = 'none';
+            player.x = canvas.width / 2;
+            bullets = [];
+            aliens = [];
+            particles = [];
+            gameRunning = true;
+            animate();
+        }
+
+        function update() {
+            if (keys.ArrowLeft && player.x > 30) {
+                player.x -= player.speed;
+            }
+            if (keys.ArrowRight && player.x < canvas.width - 30) {
+                player.x += player.speed;
+            }
+            if (keys.Space && bullets.length < 5) {
+                bullets.push({
+                    x: player.x,
+                    y: player.y
+                });
+                keys.Space = false;
+            }
+
+            bullets = bullets.filter(bullet => {
+                bullet.y -= bulletSpeed;
+                return bullet.y > 0;
+            });
+
+            aliens.forEach(alien => {
+                alien.y += alienSpeed;
+            });
+
+            aliens = aliens.filter(alien => alien.y < canvas.height);
+
+            if (Math.random() < 0.02) {
+                createAlien();
+            }
+
+            updateParticles();
+            checkCollisions();
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawPlayer();
+            drawBullets();
+            drawAliens();
+            drawParticles();
+        }
+
+        function animate() {
+            if (!gameRunning) return;
+            update();
+            draw();
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
